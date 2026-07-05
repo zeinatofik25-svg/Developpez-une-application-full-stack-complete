@@ -1,0 +1,139 @@
+.feed-head {
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #bd5d38;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.feed-actions {
+  display: flex;
+  width: 100%;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: flex-start;
+}
+
+.create-button,
+.sort-button {
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.create-button {
+  text-decoration: none;
+}
+
+.sort-button {
+  width: 153px;
+  height: 40px;
+  border: 0;
+  border-radius: 8px;
+  margin-left: auto;
+  background: #fff;
+  color: #000;
+  border: 0;
+}
+
+.sort-arrow {
+  font-size: 0.8em;
+  margin-left: 0.25rem;
+}
+
+.post-card {
+  display: grid;
+  grid-template-rows: auto auto auto auto;
+  grid-template-columns: 1fr;
+  gap: 0.35rem;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #d7d7d7;
+  background: #f5f5f5;
+}
+
+.post-card h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.meta-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.15rem;
+  font-size: 0.9rem;
+  color: #666;
+  flex-wrap: wrap;
+}
+
+.post-description {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: #333;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.read-link {
+  margin-top: 0.35rem;
+  color: #7763c5;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  align-self: start;
+}
+
+.read-link:hover {
+  text-decoration: underline;
+}
+
+.error {
+  color: #9d2d20;
+}
+
+@media (max-width: 1024px) {
+  .page-block {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .feed-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .create-button,
+  .sort-button {
+    width: 153px;
+  }
+
+  .sort-button {
+    margin-left: 0;
+  }
+
+  .post-card {
+    width: 100%;
+    height: auto;
+    min-height: 161px;
+  }
+
+  .meta-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}

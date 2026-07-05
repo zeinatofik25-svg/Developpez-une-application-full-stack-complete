@@ -1,0 +1,38 @@
+<section class="page-block mdd-page-container">
+  <a class="page-back-link" routerLink="/topics" aria-label="Retour accueil">&larr;</a>
+  <div class="feed-head">
+    <p class="eyebrow">Articles</p>
+  </div>
+
+  <div class="feed-actions">
+    <button class="create-button mdd-primary-button" routerLink="/posts/new">Créer un article</button>
+    <button class="sort-button" (click)="toggleSort()">
+      Trier par <span class="sort-arrow">{{ isSortAscending ? '▲' : '▼' }}</span>
+    </button>
+  </div>
+
+  @if (loading) {
+    <p>Chargement...</p>
+  }
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+  @if (!loading && !error && posts.length === 0) {
+    <p>Abonnez-vous à des sujets pour remplir votre feed.</p>
+  }
+
+  <div class="feed-list mdd-grid-two-col">
+    @for (post of posts; track post.id) {
+      <article class="post-card">
+        <h2>{{ post.title }}</h2>
+        <div class="meta-row">
+          <span>{{ post.topicName }}</span>
+          <span>{{ post.authorUsername }}</span>
+          <span>{{ post.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+        <p class="post-description">{{ post.content }}</p>
+        <a class="read-link" [routerLink]="['/posts', post.id]">Lire l'article</a>
+      </article>
+    }
+  </div>
+</section>

@@ -1,0 +1,38 @@
+<section class="create-post-page mdd-page-container">
+  <a class="page-back-link" routerLink="/topics" aria-label="Retour accueil">&larr;</a>
+  <div class="section-head">
+    <h1 class="page-title">Créer un nouveau article</h1>
+  </div>
+
+  @if (loadingTopics) {
+    <p>Chargement des sujets...</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="create-post-form">
+      <label>
+        Thème
+        <select formControlName="topicId">
+          <option [value]="0">Choisissez un thème</option>
+          @for (topic of topics; track topic.id) {
+            <option [value]="topic.id">{{ topic.name }}</option>
+          }
+        </select>
+      </label>
+
+      <label>
+        Titre de l'article
+        <input type="text" formControlName="title" placeholder="Titre de l'article" />
+      </label>
+
+      <label>
+        Contenu
+        <textarea rows="10" formControlName="content" placeholder="Contenu de l'article"></textarea>
+      </label>
+
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <button class="mdd-primary-button" type="submit">{{ saving ? 'Publication...' : 'Créer' }}</button>
+    </form>
+  }
+</section>

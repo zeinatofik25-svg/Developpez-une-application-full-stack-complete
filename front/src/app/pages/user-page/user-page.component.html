@@ -1,0 +1,65 @@
+<section class="user-page mdd-page-container">
+  <a class="page-back-link" routerLink="/topics" aria-label="Retour accueil">&larr;</a>
+
+  <section class="profile-card">
+    <h1 class="profile-title">Profil utilisateur</h1>
+
+    <form class="profile-form" [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Username
+        <input type="text" formControlName="username" placeholder="Votre username" />
+      </label>
+
+      <label>
+        Email
+        <input type="email" formControlName="email" placeholder="Votre email" />
+      </label>
+
+      <label>
+        Nouveau mot de passe
+        <input type="password" formControlName="password" placeholder="Laisser vide ou saisir ex: Mdd2026!" />
+        <small class="hint">Si renseigne: minimum 6 caracteres avec lettre, chiffre et caractere special.</small>
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <small class="error">Format invalide: ajoutez une lettre, un chiffre et un caractere special.</small>
+        }
+      </label>
+
+      @if (error) {
+        <p class="status error">{{ error }}</p>
+      }
+
+      @if (successMessage) {
+        <p class="status success">{{ successMessage }}</p>
+      }
+
+      <button type="submit" class="action-button mdd-primary-button">{{ saving ? 'Sauvegarde...' : 'Sauvegarder' }}</button>
+    </form>
+  </section>
+
+  <hr class="section-separator mdd-divider-gray" />
+
+  <section class="subscriptions-card">
+    <h2 class="subscriptions-title">Abonnements</h2>
+
+    @if (loadingTopics) {
+      <p class="status">Chargement...</p>
+    } @else {
+      @if (subscribedTopics.length === 0) {
+        <p class="status">Vous n'avez aucun abonnement pour le moment.</p>
+      }
+
+      <div class="topics-grid mdd-grid-two-col">
+        @for (topic of subscribedTopics; track topic.id) {
+          <article class="topic-card mdd-topic-card">
+            <div>
+              <h3>{{ topic.name }}</h3>
+              <p>{{ topic.description }}</p>
+            </div>
+
+            <button type="button" class="action-button mdd-primary-button" (click)="unsubscribe(topic)">Se désabonner</button>
+          </article>
+        }
+      </div>
+    }
+  </section>
+</section>

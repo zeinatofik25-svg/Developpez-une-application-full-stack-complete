@@ -1,0 +1,156 @@
+ .detail-shell {
+  width: min(100%, 860px);
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+}
+
+.detail-card,
+.comments-card {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: #bd5d38;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+}
+
+.meta-row {
+  display: flex;
+  gap: 1rem;
+  color: #5b6a79;
+  flex-wrap: wrap;
+}
+
+.content {
+  margin-bottom: 0;
+  padding-top: 20px;
+  white-space: pre-wrap;
+}
+
+.detail-separator {
+  width: 100%;
+  margin: 0.5rem 0;
+  border: 0;
+  border-top: 1px solid #d7d7d7;
+}
+
+.comment-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--mdd-line);
+}
+
+.comment-row:first-of-type {
+  border-top: 0;
+}
+
+.comment-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 7rem;
+  flex-shrink: 0;
+}
+
+.comment-meta strong {
+  font-size: 0.9rem;
+  color: #17324d;
+}
+
+.comment-meta span {
+  font-size: 0.78rem;
+  color: #8a97a5;
+}
+
+.comment-bubble {
+  background: #f0f3f6;
+  border-radius: 0 1rem 1rem 1rem;
+  padding: 0.7rem 0.9rem;
+  flex: 1;
+  font-size: 0.95rem;
+  color: #24435f;
+}
+
+form {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+
+.comment-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.comment-input-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.comment-input-row textarea {
+  flex: 1;
+  border: 1px solid var(--mdd-line);
+  border-radius: 16px;
+  padding: 0.9rem 1rem;
+  resize: vertical;
+}
+
+.send-btn {
+  flex-shrink: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 0;
+  background: #7763C5;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.15s;
+}
+
+.send-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.error {
+  color: #9d2d20;
+}
+
+@media (max-width: 560px) {
+  .meta-row {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .comment-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .comment-meta {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.6rem;
+    min-width: unset;
+  }
+
+  .send-btn {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+}

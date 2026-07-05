@@ -1,0 +1,49 @@
+<a class="page-back-link" routerLink="/feed" aria-label="Retour accueil">&larr;</a>
+@if (!loading && post; as currentPost) {
+  <section class="detail-shell">
+    <article class="detail-card">
+      <p class="eyebrow">{{ currentPost.topic.name }}</p>
+      <h1>{{ currentPost.title }}</h1>
+      <div class="meta-row">
+        <span>{{ currentPost.author.username }}</span>
+        <span>{{ currentPost.createdAt | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <p class="content">Content: {{ currentPost.content }}</p>
+    </article>
+    <hr class="detail-separator" />
+    <section class="comments-card">
+      <h2>Commentaires</h2>
+
+      @for (comment of currentPost.comments; track comment.id) {
+        <article class="comment-row">
+          <div class="comment-meta">
+            <strong>{{ comment.author.username }}</strong>
+            <span>{{ comment.createdAt | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="comment-bubble">{{ comment.content }}</div>
+        </article>
+      }
+
+        <form [formGroup]="commentForm" (ngSubmit)="submitComment()">
+          <label class="comment-label">Ajouter un commentaire</label>
+          <div class="comment-input-row">
+            <textarea rows="3" formControlName="content" placeholder="Partagez votre commentaire"></textarea>
+            <button type="submit" class="send-btn"
+              [disabled]="!commentForm.get('content')?.value?.trim() || commentLoading"
+              aria-label="Envoyer">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18">
+                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+              </svg>
+            </button>
+          </div>
+        </form>
+    </section>
+  </section>
+} @else {
+  @if (loading) {
+    <p>Chargement...</p>
+  }
+  @if (error) {
+    <p class="error">{{ error }}</p>
+  }
+}

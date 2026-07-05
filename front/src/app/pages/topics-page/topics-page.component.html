@@ -1,0 +1,29 @@
+<section class="page-block mdd-page-container">
+  <div class="section-head">
+      <p class="eyebrow">Thèmes</p>
+  </div>
+
+  @if (loading) {
+    <p class="status">Chargement...</p>
+  }
+  @if (error) {
+    <p class="status error">{{ error }}</p>
+  }
+
+  @if (!loading && !error) {
+    <div class="topics-grid mdd-grid-two-col">
+      @for (topic of topics; track topic.id) {
+        <article class="topic-card mdd-topic-card">
+          <div>
+            <h2>{{ topic.name }}</h2>
+            <p>{{ topic.description }}</p>
+          </div>
+
+            <button class="mdd-primary-button" type="button" [class.secondary]="topic.subscribed" (click)="toggleSubscription(topic)">
+              {{ topic.subscribed ? 'Déjà abonné' : 'S\'abonner' }}
+            </button>
+        </article>
+      }
+    </div>
+  }
+</section>
