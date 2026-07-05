@@ -1,1 +1,61 @@
-<router-outlet></router-outlet>
+<div class="app-shell">
+	@if (currentUser$ | async; as user) {
+		<header class="topbar">
+			<a class="brand-block" routerLink="/topics">
+				<img class="brand-logo" src="../assets/logo_p6.png" alt="Logo MDD" />
+			</a>
+			<div class="header-actions">
+				<button type="button" class="logout-button" (click)="logout()">Se déconnecter</button>
+				<a class="nav-button" routerLink="/feed" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Articles</a>
+				<a class="nav-button" routerLink="/topics" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">Thèmes</a>
+				<a class="account-link" routerLink="/user" aria-label="Mon compte">
+					<span class="account-avatar">{{ user.username.slice(0, 1).toUpperCase() }}</span>
+				</a>
+			</div>
+			<button
+				type="button"
+				class="menu-toggle"
+				aria-label="Ouvrir le menu"
+				aria-controls="mobile-menu"
+				[attr.aria-expanded]="mobileMenuOpen"
+				(click)="toggleMobileMenu()"
+			>
+				<span></span>
+				<span></span>
+				<span></span>
+			</button>
+		</header>
+
+		<button
+			type="button"
+			class="mobile-menu-backdrop"
+			[class.is-open]="mobileMenuOpen"
+			aria-label="Fermer le menu"
+			(click)="closeMobileMenu()"
+		></button>
+
+		<aside id="mobile-menu" class="mobile-menu" [class.is-open]="mobileMenuOpen">
+			<div class="mobile-menu-links">
+				<a routerLink="/feed" (click)="closeMobileMenu()">Articles</a>
+				<a routerLink="/topics" (click)="closeMobileMenu()">Thèmes</a>
+				<button type="button" class="logout-button" (click)="logout()">Se déconnecter</button>
+			</div>
+			<a class="account-link mobile-profile-link" routerLink="/user" aria-label="Mon compte" (click)="closeMobileMenu()">
+				<span class="account-avatar">{{ user.username.slice(0, 1).toUpperCase() }}</span>
+			</a>
+		</aside>
+	} @else {
+		<header class="topbar topbar--guest" [class.topbar--auth]="isAuthPage()">
+			@if (isAuthPage()) {
+				<a class="auth-mobile-back" routerLink="/" aria-label="Retour accueil">&larr;</a>
+			}
+			<a class="brand-block brand-block--guest" [class.brand-block--auth]="isAuthPage()" routerLink="/">
+				<img class="brand-logo brand-logo--guest" [class.brand-logo--auth]="isAuthPage()" src="../assets/logo_p6.png" alt="Logo MDD" />
+			</a>
+		</header>
+	}
+
+	<main class="page-shell">
+		<router-outlet></router-outlet>
+	</main>
+</div>
