@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mdd-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: mdd
+      MYSQL_USER: mdd_user
+      MYSQL_PASSWORD: mdd_pass_123
+      MYSQL_ROOT_PASSWORD: root_password_123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mdd_mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot_pass_change_me"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  mdd_mysql_data:
