@@ -1,0 +1,29 @@
+<section class="register-page">
+  <a class="back-arrow" routerLink="/" aria-label="Retour accueil">&larr;</a>
+
+  <h1 class="register-title">Inscription</h1>
+
+  <form class="register-form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="register-label" for="register-email">Adresse E-mail</label>
+    <input id="register-email" type="email" formControlName="email" />
+
+    <label class="register-label" for="register-username">Nom d'utilisateur</label>
+    <input id="register-username" type="text" formControlName="username" />
+
+    <label class="register-label" for="register-password">Mot de passe</label>
+    <input id="register-password" type="password" formControlName="password" />
+    <small class="register-hint">
+    Minimum 6 caractères avec lettre,<br>
+    chiffre et caractère spécial.</small>
+    
+    @if (form.get('password')?.touched && form.get('password')?.invalid) {
+      <p class="register-error">Format password invalide.</p>
+    }
+
+    @if (error) {
+      <p class="register-error">{{ error }}</p>
+    }
+
+    <button type="submit" class="register-button">{{ loading ? 'Inscription...' : "S'inscrire" }}</button>
+  </form>
+</section>

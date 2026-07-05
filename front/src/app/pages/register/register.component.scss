@@ -1,0 +1,92 @@
+.register-page {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: 32px 16px;
+	font-family: Inter, sans-serif;
+	color: #000;
+}
+
+.back-arrow {
+	align-self: flex-start;
+	margin-left: clamp(8px, 6vw, 120px);
+	text-decoration: none;
+	color: #000;
+	font-size: 28px;
+	line-height: 1;
+}
+
+.register-title {
+	width: 197px;
+	min-height: 44px;
+	margin: 28px 0 20px;
+	text-align: center;
+	font-weight: 400;
+	font-size: 24px;
+	line-height: 100%;
+	letter-spacing: 0;
+}
+
+.register-form {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+}
+
+.register-label {
+	width: 160px;
+	min-height: 34px;
+	display: inline-flex;
+	align-items: center;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 100%;
+	letter-spacing: 0;
+}
+
+.register-form input {
+	width: 250px;
+	height: 50px;
+	border-radius: 8px;
+	border: 1px solid #000;
+	background: #fff;
+	padding: 0 12px;
+	font-size: 16px;
+}
+
+.register-button {
+	width: 128px;
+	height: 40px;
+	margin: 20px auto 0;
+	border: 0;
+	border-radius: 8px;
+	background: #7763c5;
+	color: #fff;
+	font-size: 16px;
+	cursor: pointer;
+}
+
+.register-error {
+	margin: 4px 0 0;
+	color: #b3261e;
+	font-size: 14px;
+}
+
+.register-hint {
+	color: #666;
+	font-size: 12px;
+	margin: -8px 0 0;
+}
+
+@media (max-width: 560px) {
+	.back-arrow {
+		display: none;
+	}
+
+	.register-title {
+		width: 100%;
+		margin: 20px 0;
+		text-align: center;
+	}
+}

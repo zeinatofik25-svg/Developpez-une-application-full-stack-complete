@@ -1,0 +1,19 @@
+<section class="register-page">
+  <a class="back-arrow" routerLink="/" aria-label="Retour accueil">&larr;</a>
+
+  <h1 class="register-title">Se connecter</h1>
+
+  <form class="register-form" [formGroup]="form" (ngSubmit)="submit()">
+    <label class="register-label" for="login-identifier">Email ou Identifiant</label>
+    <input id="login-identifier" type="text" formControlName="identifier" />
+
+    <label class="register-label" for="login-password">Mot de passe</label>
+    <input id="login-password" type="password" formControlName="password" />
+
+    @if (error) {
+      <p class="register-error">{{ error }}</p>
+    }
+
+    <button type="submit" class="register-button">{{ loading ? 'Connexion...' : 'Se connecter' }}</button>
+  </form>
+</section>
