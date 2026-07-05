@@ -1,7 +1,39 @@
-.center {
-  height: 100vh;
+.home {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+}
+
+.home-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.home-button {
+  width: 377px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 8px;
+  border: 1px solid #000000;
+  background: #ffffff;
+  color: #000000;
+}
+
+@media (max-width: 640px) {
+  .home-actions {
+    width: 156px;
+    height: 116.5px;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .home-button {
+    width: 156px;
+    height: 40px;
+  }
 }
