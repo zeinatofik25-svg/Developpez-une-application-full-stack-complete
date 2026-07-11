@@ -30,7 +30,9 @@ export class LoginComponent {
     private readonly router: Router
   ) {}
 
-  // Soumet la connexion puis redirige vers la page thèmes en cas de succès.
+  /**
+   * Soumet la connexion puis redirige vers la page thèmes en cas de succès.
+   */
   submit(): void {
     if (this.form.invalid || this.loading) {
       this.form.markAllAsTouched();

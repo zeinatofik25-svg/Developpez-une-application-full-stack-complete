@@ -21,31 +21,43 @@ export class AppComponent {
     this.authService.restoreSession().subscribe();
   }
 
-  // Termine la session utilisateur et revient à la page d'accueil.
+  /**
+   * Termine la session utilisateur et revient à la page d'accueil.
+   */
   logout(): void {
     this.authService.logout();
     this.mobileMenuOpen = false;
     void this.router.navigate(['/']);
   }
 
-  // Ouvre/ferme le menu mobile.
+  /**
+   * Ouvre ou ferme le menu mobile.
+   */
   protected toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
-  // Force la fermeture du menu mobile.
+  /**
+   * Force la fermeture du menu mobile.
+   */
   protected closeMobileMenu(): void {
     this.mobileMenuOpen = false;
   }
 
-  // Indique si la route active correspond aux pages d'authentification.
+  /**
+   * Indique si la route active correspond aux pages d'authentification.
+   *
+   * @returns true si la route est /login ou /register
+   */
   protected isAuthPage(): boolean {
     const path = this.router.url.split('?')[0].split('#')[0];
     return path === '/login' || path === '/register';
   }
 
   @HostListener('window:resize')
-  // Referme le menu si on repasse en largeur desktop.
+  /**
+   * Referme le menu si on repasse en largeur desktop.
+   */
   protected onResize(): void {
     if (window.innerWidth > 640 && this.mobileMenuOpen) {
       this.mobileMenuOpen = false;

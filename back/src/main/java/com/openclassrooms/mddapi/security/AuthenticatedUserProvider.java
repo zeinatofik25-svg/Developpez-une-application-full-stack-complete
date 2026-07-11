@@ -19,14 +19,22 @@ public class AuthenticatedUserProvider implements CurrentUserProvider {
     }
 
     @Override
-    // Retourne l'utilisateur authentifié ou déclenche une erreur 401.
+    /**
+     * Retourne l'utilisateur authentifié ou déclenche une erreur 401.
+     *
+     * @return utilisateur courant authentifié
+     */
     public User getCurrentUser() {
         return getCurrentUserOptional()
             .orElseThrow(() -> new UnauthorizedException("Utilisateur non authentifié"));
     }
 
     @Override
-    // Tente de résoudre l'utilisateur courant depuis le SecurityContext (optionnel).
+    /**
+     * Tente de résoudre l'utilisateur courant depuis le SecurityContext.
+     *
+     * @return utilisateur courant si présent, sinon Optional.empty()
+     */
     public Optional<User> getCurrentUserOptional() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {

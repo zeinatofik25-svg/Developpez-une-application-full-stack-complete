@@ -37,13 +37,18 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /**
+     * Inscrit un nouvel utilisateur et démarre sa session via cookie HttpOnly.
+     *
+     * @param request données d'inscription
+     * @return profil utilisateur créé
+     */
     @PostMapping("/register")
     @Operation(summary = "Inscrire un utilisateur")
     @SecurityRequirements
     @ApiResponse(responseCode = "201", description = "Utilisateur inscrit")
     @ApiResponse(responseCode = "400", description = "Requete invalide")
     @ApiResponse(responseCode = "409", description = "Email ou pseudo déjà utilisé")
-    // Crée un compte puis retourne immédiatement le token JWT de session.
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
         AuthResponse response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -51,13 +56,18 @@ public class AuthController {
             .body(response);
     }
 
+    /**
+     * Authentifie un utilisateur et crée un cookie de session sécurisé.
+     *
+     * @param request identifiant et mot de passe
+     * @return profil utilisateur authentifié
+     */
     @PostMapping("/login")
     @Operation(summary = "Connecter un utilisateur")
     @SecurityRequirements
     @ApiResponse(responseCode = "200", description = "Connexion réussie")
     @ApiResponse(responseCode = "400", description = "Requete invalide")
     @ApiResponse(responseCode = "401", description = "Identifiants invalides")
-    // Authentifie l'utilisateur (email ou username) et retourne un JWT.
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         AuthResponse response = authService.login(request);
         return ResponseEntity.ok()
@@ -65,16 +75,26 @@ public class AuthController {
             .body(response);
     }
 
+    /**
+     * Retourne le profil de l'utilisateur actuellement authentifié.
+     *
+     * @return profil courant
+     */
     @GetMapping("/me")
     @Operation(summary = "Récuperer l'utilisateur connecté")
     @SecurityRequirement(name = AUTH_COOKIE_SCHEME)
     @ApiResponse(responseCode = "200", description = "Utilisateur retourné")
     @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié")
-    // Retourne le profil du compte lié au token courant.
     public CurrentUserResponse me() {
         return authService.me();
     }
 
+    /**
+     * Met à jour le profil du compte connecté et renouvelle la session.
+     *
+     * @param request payload de mise à jour
+     * @return profil mis à jour
+     */
     @PutMapping("/me")
     @Operation(summary = "Mettre à jour le profil utilisateur")
     @SecurityRequirement(name = AUTH_COOKIE_SCHEME)
@@ -82,7 +102,6 @@ public class AuthController {
     @ApiResponse(responseCode = "400", description = "Requete invalide")
     @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié")
     @ApiResponse(responseCode = "409", description = "Email ou pseudo déjà utilisé")
-    // Met à jour les infos du compte connecté puis renvoie un JWT rafraîchi.
     public ResponseEntity<AuthResponse> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
         AuthResponse response = authService.updateProfile(request);
         return ResponseEntity.ok()

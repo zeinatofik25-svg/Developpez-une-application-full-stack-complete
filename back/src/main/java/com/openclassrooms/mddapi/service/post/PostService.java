@@ -1,6 +1,7 @@
 package com.openclassrooms.mddapi.service.post;
 
 import com.openclassrooms.mddapi.dto.post.CreatePostRequest;
+import com.openclassrooms.mddapi.dto.post.FeedPageResponse;
 import com.openclassrooms.mddapi.dto.post.PostDetailResponse;
 import com.openclassrooms.mddapi.dto.post.PostDetailResponse.AuthorSummary;
 import com.openclassrooms.mddapi.dto.post.PostDetailResponse.CommentSummary;
@@ -10,6 +11,7 @@ import com.openclassrooms.mddapi.entity.Comment;
 import com.openclassrooms.mddapi.entity.Post;
 import com.openclassrooms.mddapi.entity.Topic;
 import com.openclassrooms.mddapi.entity.User;
+import com.openclassrooms.mddapi.exception.ForbiddenException;
 import com.openclassrooms.mddapi.exception.NotFoundException;
 import com.openclassrooms.mddapi.repository.post.PostRepository;
 import com.openclassrooms.mddapi.repository.subscription.SubscriptionRepository;
@@ -17,11 +19,18 @@ import com.openclassrooms.mddapi.repository.topic.TopicRepository;
 import com.openclassrooms.mddapi.security.CurrentUserProvider;
 import java.util.Collections;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PostService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostService.class);
 
     private final PostRepository postRepository;
     private final TopicRepository topicRepository;
@@ -45,6 +54,8 @@ public class PostService {
      */
     public PostDetailResponse createPost(CreatePostRequest request) {
         User currentUser = currentUserProvider.getCurrentUser();
+        LOGGER.info("Création d'article demandée: userId={}, topicId={}", currentUser.getId(), request.topicId());
+
         Topic topic = topicRepository.findById(request.topicId())
             .orElseThrow(() -> new NotFoundException("Sujet introuvable"));
 
@@ -55,6 +66,7 @@ public class PostService {
         post.setAuthor(currentUser);
 
         Post savedPost = postRepository.save(post);
+        LOGGER.info("Article créé: postId={}, userId={}, topicId={}", savedPost.getId(), currentUser.getId(), topic.getId());
         return mapToDetail(savedPost, Collections.emptyList());
     }
 
@@ -66,8 +78,18 @@ public class PostService {
      * @throws NotFoundException si l'article est introuvable
      */
     public PostDetailResponse getPostDetail(Long postId) {
+        User currentUser = currentUserProvider.getCurrentUser();
         Post post = postRepository.findDetailedById(postId)
             .orElseThrow(() -> new NotFoundException("Article introuvable"));
+
+        boolean subscribed = subscriptionRepository.existsByUserIdAndTopicId(currentUser.getId(), post.getTopic().getId());
+        if (!subscribed) {
+            LOGGER.warn("Accès refusé au détail d'article: userId={}, postId={}, topicId={}",
+                currentUser.getId(), postId, post.getTopic().getId());
+            throw new ForbiddenException("Accès refusé: abonnez-vous au thème pour consulter cet article");
+        }
+
+        LOGGER.debug("Détail d'article récupéré: userId={}, postId={}", currentUser.getId(), postId);
         return mapToDetail(post, post.getComments());
     }
 
@@ -75,19 +97,34 @@ public class PostService {
      * Retourne le feed des articles filtrés par les sujets auxquels l'utilisateur est abonné.
      *
      * @param sort "newest" (défaut) pour décroissant, "oldest" pour croissant
-     * @return liste triée des articles du feed
+     * @param page index de page (base 0)
+     * @param size taille de page
+     * @return page triée des articles du feed
      */
-    public List<PostSummaryResponse> getFeed(String sort) {
+    public FeedPageResponse<PostSummaryResponse> getFeed(String sort, int page, int size) {
         User currentUser = currentUserProvider.getCurrentUser();
         List<Long> topicIds = subscriptionRepository.findTopicIdsByUserId(currentUser.getId());
         if (topicIds.isEmpty()) {
-            return List.of();
+            LOGGER.debug("Feed vide: aucun abonnement pour userId={}", currentUser.getId());
+            return new FeedPageResponse<>(List.of(), page, size, 0, 0, false);
         }
 
         Sort.Direction direction = "oldest".equalsIgnoreCase(sort) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        return postRepository.findByTopicIdIn(topicIds, Sort.by(direction, "createdAt")).stream()
-            .map(this::mapToSummary)
-            .toList();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+        Page<PostSummaryResponse> feedPage = postRepository.findByTopicIdIn(topicIds, pageable)
+            .map(this::mapToSummary);
+
+        LOGGER.debug("Feed paginé: userId={}, page={}, size={}, returned={}, hasNext={}",
+            currentUser.getId(), page, size, feedPage.getNumberOfElements(), feedPage.hasNext());
+
+        return new FeedPageResponse<>(
+            feedPage.getContent(),
+            feedPage.getNumber(),
+            feedPage.getSize(),
+            feedPage.getTotalElements(),
+            feedPage.getTotalPages(),
+            feedPage.hasNext()
+        );
     }
 
     private PostSummaryResponse mapToSummary(Post post) {

@@ -22,21 +22,15 @@ export class TopicService {
 
   constructor(private readonly http: HttpClient) {}
 
-  // Retourne tous les thèmes avec le statut d'abonnement utilisateur.
+  /**
+   * Retourne tous les thèmes avec le statut d'abonnement utilisateur.
+   *
+   * @returns liste des thèmes
+   */
   getTopics(): Observable<Topic[]> {
     if (environment.simulateApiErrors.topicsFetch) {
       return throwError(() => new Error(`Simulation API: ${SIMULATION_ERROR_KEYS.TOPICS_FETCH}`));
     }
     return this.http.get<Topic[]>(this.apiUrl);
-  }
-
-  // Crée un abonnement au thème donné.
-  subscribe(topicId: number): Observable<Topic> {
-    return this.http.post<Topic>(`${this.apiUrl}/${topicId}/subscribe`, {});
-  }
-
-  // Supprime l'abonnement au thème donné.
-  unsubscribe(topicId: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${topicId}/unsubscribe`);
   }
 }

@@ -35,4 +35,11 @@
       </article>
     }
   </div>
+
+  @if (!loading && !error && posts.length > 0) {
+    <div class="pagination-controls">
+      <button type="button" class="mdd-primary-button" (click)="loadPreviousPage()" [disabled]="!canGoPrevious()">Page précédente</button>
+      <button type="button" class="mdd-primary-button" (click)="loadNextPage()" [disabled]="!hasNext">Page suivante</button>
+    </div>
+  }
 </section>

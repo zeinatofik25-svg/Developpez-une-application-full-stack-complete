@@ -32,7 +32,9 @@ export class PostDetailComponent implements OnInit {
     private readonly commentService: CommentService,
   ) {}
 
-  // Charge le détail de l'article depuis l'id de route (postId).
+  /**
+   * Charge le détail de l'article depuis l'id de route (postId).
+   */
   ngOnInit(): void {
     const postId = Number(this.route.snapshot.paramMap.get('postId'));
     if (!postId) {
@@ -55,7 +57,9 @@ export class PostDetailComponent implements OnInit {
       });
   }
 
-  // Envoie un nouveau commentaire et l'ajoute localement à la liste affichée.
+  /**
+   * Envoie un nouveau commentaire et l'ajoute localement à la liste affichée.
+   */
   submitComment(): void {
     if (!this.post || this.commentForm.invalid || this.commentLoading) {
       this.commentForm.markAllAsTouched();

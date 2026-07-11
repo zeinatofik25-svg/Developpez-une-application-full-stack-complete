@@ -59,7 +59,29 @@ describe('TopicsPageComponent', () => {
     component.ngOnInit();
 
     expect((component as any).topics.length).toBe(1);
+    expect((component as any).pagedTopics.length).toBe(1);
     expect((component as any).loading).toBe(false);
+  });
+
+  it('should paginate topics by 4 items per page', () => {
+    const topics = Array.from({ length: 9 }).map((_, index) => ({
+      id: index + 1,
+      name: `Topic ${index + 1}`,
+      description: 'Desc',
+      createdAt: '2026-01-01T00:00:00',
+      subscribed: false
+    }));
+
+    topicServiceMock.getTopics.mockReturnValue(of(topics));
+
+    component.ngOnInit();
+    expect((component as any).pagedTopics).toHaveLength(4);
+
+    component.loadNextPage();
+    expect((component as any).pagedTopics).toHaveLength(4);
+
+    component.loadNextPage();
+    expect((component as any).pagedTopics).toHaveLength(1);
   });
 
   it('should set error when topics loading fails', () => {

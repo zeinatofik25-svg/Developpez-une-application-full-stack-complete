@@ -8,11 +8,15 @@ import com.openclassrooms.mddapi.security.CurrentUserProvider;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TopicService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TopicService.class);
 
     private final TopicRepository topicRepository;
     private final SubscriptionRepository subscriptionRepository;
@@ -25,18 +29,31 @@ public class TopicService {
         this.currentUserProvider = currentUserProvider;
     }
 
-    // Retourne tous les thèmes triés par nom, avec l'état d'abonnement pour l'utilisateur courant.
+    /**
+     * Retourne tous les thèmes triés par nom, avec l'état d'abonnement pour l'utilisateur courant.
+     *
+     * @return liste des thèmes enrichie de l'information d'abonnement
+     */
     public List<TopicResponse> getAllTopics() {
         Set<Long> subscribedTopicIds = currentUserProvider.getCurrentUserOptional()
             .map(user -> new HashSet<>(subscriptionRepository.findTopicIdsByUserId(user.getId())))
             .orElseGet(HashSet::new);
 
-        return topicRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
+        List<TopicResponse> topics = topicRepository.findAll(Sort.by(Sort.Direction.ASC, "name")).stream()
             .map(topic -> toResponse(topic, subscribedTopicIds.contains(topic.getId())))
             .toList();
+
+        LOGGER.debug("Thèmes chargés: count={}, subscribedCount={}", topics.size(), subscribedTopicIds.size());
+        return topics;
     }
 
-    // Convertit une entité Topic en DTO de réponse API.
+    /**
+     * Convertit une entité Topic en DTO de réponse API.
+     *
+     * @param topic entité topic source
+     * @param subscribed statut d'abonnement utilisateur
+     * @return DTO exposé par l'API
+     */
     public TopicResponse toResponse(Topic topic, boolean subscribed) {
         return new TopicResponse(
             topic.getId(),

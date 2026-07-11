@@ -55,21 +55,4 @@ describe('TopicService', () => {
 
     expect(errorMessage).toContain(SIMULATION_ERROR_KEYS.TOPICS_FETCH);
   });
-
-  it('should subscribe to a topic', () => {
-    service.subscribe(7).subscribe();
-
-    const req = httpMock.expectOne(`${baseApiUrl}/7/subscribe`);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual({});
-    req.flush({ id: 7 });
-  });
-
-  it('should unsubscribe from a topic', () => {
-    service.unsubscribe(7).subscribe();
-
-    const req = httpMock.expectOne(`${baseApiUrl}/7/unsubscribe`);
-    expect(req.request.method).toBe('DELETE');
-    req.flush(null);
-  });
 });

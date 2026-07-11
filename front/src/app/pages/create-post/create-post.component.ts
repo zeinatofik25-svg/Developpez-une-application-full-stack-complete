@@ -35,7 +35,9 @@ export class CreatePostComponent implements OnInit {
     private readonly router: Router
   ) {}
 
-  // Charge la liste des thèmes abonnés disponibles pour la création d'article.
+  /**
+   * Charge la liste des thèmes abonnés disponibles pour la création d'article.
+   */
   ngOnInit(): void {
     this.topicService.getTopics()
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -51,7 +53,9 @@ export class CreatePostComponent implements OnInit {
       });
   }
 
-  // Crée un article puis redirige vers sa page détail.
+  /**
+   * Crée un article puis redirige vers sa page détail.
+   */
   submit(): void {
     if (this.form.invalid || this.saving) {
       this.form.markAllAsTouched();

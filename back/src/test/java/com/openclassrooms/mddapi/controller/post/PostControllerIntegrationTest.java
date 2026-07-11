@@ -6,6 +6,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.openclassrooms.mddapi.dto.post.FeedPageResponse;
 import com.openclassrooms.mddapi.dto.post.PostDetailResponse;
 import com.openclassrooms.mddapi.dto.post.PostSummaryResponse;
 import com.openclassrooms.mddapi.exception.GlobalExceptionHandler;
@@ -69,14 +70,24 @@ class PostControllerIntegrationTest {
     }
 
     @Test
-    void getFeedShouldReturnList() throws Exception {
-        when(postService.getFeed("newest")).thenReturn(List.of(
-            new PostSummaryResponse(1L, "T", "C", LocalDateTime.now(), 2L, "Java", 3L, "author")
+    void getFeedShouldReturnPaginatedPayload() throws Exception {
+        when(postService.getFeed("newest", 0, 10)).thenReturn(new FeedPageResponse<>(
+            List.of(new PostSummaryResponse(1L, "T", "C", LocalDateTime.now(), 2L, "Java", 3L, "author")),
+            0,
+            10,
+            1,
+            1,
+            false
         ));
 
-        mockMvc.perform(get("/api/posts/feed").param("sort", "newest"))
+        mockMvc.perform(get("/api/posts/feed")
+                .param("sort", "newest")
+                .param("page", "0")
+                .param("size", "10"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$[0].id").value(1));
+            .andExpect(jsonPath("$.items[0].id").value(1))
+            .andExpect(jsonPath("$.page").value(0))
+            .andExpect(jsonPath("$.hasNext").value(false));
     }
 
     @Test

@@ -12,7 +12,7 @@
 
   @if (!loading && !error) {
     <div class="topics-grid mdd-grid-two-col">
-      @for (topic of topics; track topic.id) {
+      @for (topic of pagedTopics; track topic.id) {
         <article class="topic-card mdd-topic-card">
           <div>
             <h2>{{ topic.name }}</h2>
@@ -25,5 +25,12 @@
         </article>
       }
     </div>
+
+    @if (pagedTopics.length > 0) {
+      <div class="pagination-controls">
+        <button type="button" class="mdd-primary-button" (click)="loadPreviousPage()" [disabled]="!canGoPrevious()">Page précédente</button>
+        <button type="button" class="mdd-primary-button" (click)="loadNextPage()" [disabled]="!canGoNext()">Page suivante</button>
+      </div>
+    }
   }
 </section>

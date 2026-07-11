@@ -9,10 +9,14 @@ import com.openclassrooms.mddapi.exception.NotFoundException;
 import com.openclassrooms.mddapi.repository.subscription.SubscriptionRepository;
 import com.openclassrooms.mddapi.repository.topic.TopicRepository;
 import com.openclassrooms.mddapi.security.CurrentUserProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SubscriptionService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionService.class);
 
     private final SubscriptionRepository subscriptionRepository;
     private final TopicRepository topicRepository;
@@ -25,9 +29,16 @@ public class SubscriptionService {
         this.currentUserProvider = currentUserProvider;
     }
 
-    // Crée un abonnement entre l'utilisateur courant et le thème demandé.
+    /**
+     * Crée un abonnement entre l'utilisateur courant et le thème demandé.
+     *
+     * @param topicId identifiant du thème à suivre
+     * @return réponse du thème marqué comme abonné
+     */
     public TopicResponse subscribe(Long topicId) {
         User currentUser = currentUserProvider.getCurrentUser();
+        LOGGER.info("Demande d'abonnement: userId={}, topicId={}", currentUser.getId(), topicId);
+
         Topic topic = topicRepository.findById(topicId)
             .orElseThrow(() -> new NotFoundException("Sujet introuvable"));
 
@@ -39,6 +50,7 @@ public class SubscriptionService {
         subscription.setUser(currentUser);
         subscription.setTopic(topic);
         subscriptionRepository.save(subscription);
+        LOGGER.info("Abonnement créé: userId={}, topicId={}", currentUser.getId(), topicId);
 
         return new TopicResponse(
             topic.getId(),
@@ -49,12 +61,18 @@ public class SubscriptionService {
         );
     }
 
-    // Supprime l'abonnement de l'utilisateur courant au thème demandé si présent.
+    /**
+     * Supprime l'abonnement de l'utilisateur courant au thème demandé si présent.
+     *
+     * @param topicId identifiant du thème à ne plus suivre
+     */
     public void unsubscribe(Long topicId) {
         User currentUser = currentUserProvider.getCurrentUser();
         if (!subscriptionRepository.existsByUserIdAndTopicId(currentUser.getId(), topicId)) {
+            LOGGER.debug("Aucun abonnement à supprimer: userId={}, topicId={}", currentUser.getId(), topicId);
             return;
         }
         subscriptionRepository.deleteByUserIdAndTopicId(currentUser.getId(), topicId);
+        LOGGER.info("Abonnement supprimé: userId={}, topicId={}", currentUser.getId(), topicId);
     }
 }

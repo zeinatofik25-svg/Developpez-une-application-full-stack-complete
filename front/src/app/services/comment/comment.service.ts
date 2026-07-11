@@ -19,7 +19,13 @@ export class CommentService {
 
   constructor(private readonly http: HttpClient) {}
 
-  // Crée un commentaire sur l'article ciblé.
+  /**
+   * Crée un commentaire sur l'article ciblé.
+   *
+   * @param postId identifiant de l'article
+   * @param content contenu du commentaire
+   * @returns commentaire créé
+   */
   createComment(postId: number, content: string): Observable<CommentResponse> {
     return this.http.post<CommentResponse>(`${this.apiUrl}/${postId}/comments`, { content });
   }

@@ -38,19 +38,19 @@ describe('PostService', () => {
       result = value;
     });
 
-    const req = httpMock.expectOne(`${baseApiUrl}/feed?sort=newest`);
+    const req = httpMock.expectOne(`${baseApiUrl}/feed?sort=newest&page=0&size=10`);
     expect(req.request.method).toBe('GET');
-    req.flush([{ id: 1 }]);
+    req.flush({ items: [{ id: 1 }], page: 0, size: 10, totalElements: 1, totalPages: 1, hasNext: false });
 
-    expect(result).toEqual([{ id: 1 }]);
+    expect(result).toEqual({ items: [{ id: 1 }], page: 0, size: 10, totalElements: 1, totalPages: 1, hasNext: false });
   });
 
   it('should fetch feed with explicit sort', () => {
-    service.getFeed('oldest').subscribe();
+    service.getFeed('oldest', 2, 5).subscribe();
 
-    const req = httpMock.expectOne(`${baseApiUrl}/feed?sort=oldest`);
+    const req = httpMock.expectOne(`${baseApiUrl}/feed?sort=oldest&page=2&size=5`);
     expect(req.request.method).toBe('GET');
-    req.flush([]);
+    req.flush({ items: [], page: 2, size: 5, totalElements: 0, totalPages: 0, hasNext: false });
   });
 
   it('should return simulated error for feed', () => {

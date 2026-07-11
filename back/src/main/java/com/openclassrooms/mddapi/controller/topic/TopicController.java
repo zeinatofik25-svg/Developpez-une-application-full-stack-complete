@@ -23,10 +23,14 @@ public class TopicController {
         this.topicService = topicService;
     }
 
+    /**
+     * Retourne la liste des thèmes, avec statut d'abonnement si utilisateur connecté.
+     *
+     * @return thèmes disponibles
+     */
     @GetMapping
     @Operation(summary = "Recupérer tous les sujets")
     @ApiResponse(responseCode = "200", description = "Liste des sujets retournés")
-    // Retourne la liste des thèmes, avec statut d'abonnement si utilisateur connecté.
     public List<TopicResponse> getTopics() {
         return topicService.getAllTopics();
     }

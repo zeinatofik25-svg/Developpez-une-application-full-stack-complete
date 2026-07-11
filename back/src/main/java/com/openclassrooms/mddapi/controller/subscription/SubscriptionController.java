@@ -26,6 +26,12 @@ public class SubscriptionController {
         this.subscriptionService = subscriptionService;
     }
 
+    /**
+     * Abonne l'utilisateur connecté au thème demandé.
+     *
+     * @param topicId identifiant du thème
+     * @return thème désormais abonné
+     */
     @PostMapping("/{topicId}/subscribe")
     @Operation(summary = "S'abonner à un sujet")
     @SecurityRequirement(name = AUTH_COOKIE_SCHEME)
@@ -33,17 +39,21 @@ public class SubscriptionController {
     @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié")
     @ApiResponse(responseCode = "404", description = "Sujet introuvable")
     @ApiResponse(responseCode = "409", description = "Utilisateur déjà abonné")
-    // Abonne l'utilisateur connecté au thème demandé.
     public ResponseEntity<TopicResponse> subscribe(@PathVariable Long topicId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(topicId));
     }
 
+    /**
+     * Désabonne l'utilisateur connecté du thème demandé.
+     *
+     * @param topicId identifiant du thème
+     * @return réponse vide (204)
+     */
     @DeleteMapping("/{topicId}/unsubscribe")
     @Operation(summary = "Se désabonner d'un sujet")
     @SecurityRequirement(name = AUTH_COOKIE_SCHEME)
     @ApiResponse(responseCode = "204", description = "Désabonnement effectué")
     @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié")
-    // Désabonne l'utilisateur connecté du thème demandé.
     public ResponseEntity<Void> unsubscribe(@PathVariable Long topicId) {
         subscriptionService.unsubscribe(topicId);
         return ResponseEntity.noContent().build();

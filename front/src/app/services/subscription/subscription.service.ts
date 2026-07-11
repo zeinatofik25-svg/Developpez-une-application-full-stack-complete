@@ -13,12 +13,22 @@ export class SubscriptionService {
 
   constructor(private readonly http: HttpClient) {}
 
-  // Abonne l'utilisateur courant à un thème.
+  /**
+   * Abonne l'utilisateur courant à un thème.
+   *
+   * @param topicId identifiant du thème
+   * @returns thème mis à jour
+   */
   subscribe(topicId: number): Observable<Topic> {
     return this.http.post<Topic>(`${this.apiUrl}/${topicId}/subscribe`, {});
   }
 
-  // Désabonne l'utilisateur courant d'un thème.
+  /**
+   * Désabonne l'utilisateur courant d'un thème.
+   *
+   * @param topicId identifiant du thème
+   * @returns réponse vide
+   */
   unsubscribe(topicId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${topicId}/unsubscribe`);
   }

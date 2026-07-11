@@ -39,7 +39,9 @@ export class UserPageComponent implements OnInit {
     private readonly subscriptionService: SubscriptionService
   ) {}
 
-  // Précharge les infos du profil connecté et les abonnements utilisateur.
+  /**
+   * Précharge les infos du profil connecté et les abonnements utilisateur.
+   */
   ngOnInit(): void {
     this.authService.currentUser$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -58,7 +60,9 @@ export class UserPageComponent implements OnInit {
     this.loadSubscribedTopics();
   }
 
-  // Met à jour le profil (email/username/password optionnel) de l'utilisateur courant.
+  /**
+   * Met à jour le profil (email/username/password optionnel) de l'utilisateur courant.
+   */
   submit(): void {
     if (this.form.invalid || this.saving) {
       this.form.markAllAsTouched();
@@ -91,7 +95,11 @@ export class UserPageComponent implements OnInit {
       });
   }
 
-  // Désabonne l'utilisateur d'un thème depuis la page profil.
+  /**
+   * Désabonne l'utilisateur d'un thème depuis la page profil.
+   *
+   * @param topic thème à désabonner
+   */
   unsubscribe(topic: Topic): void {
     this.error = '';
     this.successMessage = '';
@@ -108,7 +116,9 @@ export class UserPageComponent implements OnInit {
       });
   }
 
-  // Charge uniquement les thèmes auxquels l'utilisateur est déjà abonné.
+  /**
+   * Charge uniquement les thèmes auxquels l'utilisateur est déjà abonné.
+   */
   private loadSubscribedTopics(): void {
     this.loadingTopics = true;
 

@@ -28,7 +28,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     @Override
-    // Lit le Bearer token, valide l'utilisateur, puis injecte l'authentification dans le SecurityContext.
+    /**
+     * Lit le token (header ou cookie), valide l'utilisateur et alimente le SecurityContext.
+     *
+     * @param request requête HTTP entrante
+     * @param response réponse HTTP
+     * @param filterChain chaine de filtres
+     * @throws ServletException en cas d'erreur servlet
+     * @throws IOException en cas d'erreur I/O
+     */
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
         throws ServletException, IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -55,6 +63,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Extrait le token d'authentification depuis le header Authorization ou le cookie de session.
+     *
+     * @param authorizationHeader header Authorization éventuel
+     * @param cookies cookies de la requête
+     * @return token trouvé, sinon null
+     */
     private String extractTokenFromHeaderOrCookie(String authorizationHeader, Cookie[] cookies) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             return authorizationHeader.substring(7);

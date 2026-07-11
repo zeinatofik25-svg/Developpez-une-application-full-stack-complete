@@ -28,6 +28,13 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    /**
+     * Crée un commentaire pour un article donné.
+     *
+     * @param postId identifiant de l'article cible
+     * @param request contenu du commentaire
+     * @return commentaire créé
+     */
     @PostMapping("/{postId}/comments")
     @Operation(summary = "Ajouter un commentaire sur un article")
     @SecurityRequirement(name = AUTH_COOKIE_SCHEME)
@@ -35,7 +42,6 @@ public class CommentController {
     @ApiResponse(responseCode = "400", description = "Requete invalide")
     @ApiResponse(responseCode = "401", description = "Utilisateur non authentifié")
     @ApiResponse(responseCode = "404", description = "Article introuvable")
-    // Ajoute un commentaire sur un article au nom de l'utilisateur connecté.
     public ResponseEntity<CommentSummary> createComment(@PathVariable Long postId,
                                                         @Valid @RequestBody CreateCommentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(postId, request));

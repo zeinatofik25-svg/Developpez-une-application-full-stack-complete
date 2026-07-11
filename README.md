@@ -98,7 +98,7 @@ Si le port 4200 est occupé : `npm start -- --port 4201`
 
 Documentation interactive : `http://localhost:8080/swagger-ui/index.html`
 
-> Les routes marquées ?? nécessitent un header `Authorization: Bearer <token>`.
+> Les routes marquées `Privé` nécessitent une session authentifiée. Dans le navigateur, l'authentification repose sur un cookie `HttpOnly` envoyé automatiquement. L'API accepte aussi un header `Authorization: Bearer <token>` pour les tests/outils externes.
 
 ### Authentification `/api/auth`
 
@@ -121,10 +121,23 @@ Règle mot de passe : min. 6 caractères, au moins une lettre, un chiffre et un 
 ### Articles `/api/posts`
 
 | Méthode | Route | Auth | Description |
-| GET | `/api/posts/feed?sort=newest` | Privé | Feed articles sujets abonnés, ordre décroissant |
-| GET | `/api/posts/feed?sort=oldest` | Privé | Feed articles sujets abonnés, ordre croissant |
+| GET | `/api/posts/feed?sort=newest&page=0&size=4` | Privé | Feed paginé des articles des sujets abonnés, ordre décroissant |
+| GET | `/api/posts/feed?sort=oldest&page=0&size=4` | Privé | Feed paginé des articles des sujets abonnés, ordre croissant |
 | POST | `/api/posts` | Privé | Créer un article |
-| GET | `/api/posts/{postId}` | Privé | Détail d'un article avec commentaires |
+| GET | `/api/posts/{postId}` | Privé | Détail d'un article avec commentaires, accessible seulement si l'utilisateur est abonné au thème |
+
+Paramètres du feed :
+- `sort` : `newest` ou `oldest`
+- `page` : index de page, base 0
+- `size` : nombre d'articles par page
+
+Réponse du feed :
+- `items` : articles de la page courante
+- `page` : index courant
+- `size` : taille de page
+- `totalElements` : total d'articles disponibles
+- `totalPages` : nombre total de pages
+- `hasNext` : indique si une page suivante existe
 
 ### Commentaires
 
@@ -140,6 +153,7 @@ Règle mot de passe : min. 6 caractères, au moins une lettre, un chiffre et un 
 | 204 | Succes sans contenu |
 | 400 | Validation échouée |
 | 401 | Non authentifié |
+| 403 | Accès refusé |
 | 404 | Ressource introuvable |
 | 409 | Conflit (email/pseudo déjà pris, déjà abonné) |
 | 500 | Erreur interne serveur |
@@ -188,7 +202,9 @@ Rapport Jest by Istanbul: `front/coverage/lcov-report/index.html`
 
 **Frontend** : composants Angular standalone
 - `authGuard` protège les routes privées
-- `authInterceptor` injecte le Bearer token automatiquement
+- `authInterceptor` envoie automatiquement les credentials (`withCredentials`) pour le cookie `HttpOnly`
+- page `topics` : pagination locale côté frontend (4 cartes par page)
+- page `feed` : pagination côté backend avec appel API paginé (`sort`, `page`, `size`)
 
 ---
 

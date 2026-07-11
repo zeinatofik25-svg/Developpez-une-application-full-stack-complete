@@ -33,7 +33,9 @@ export class RegisterComponent {
     private readonly router: Router
   ) {}
 
-  // Soumet l'inscription si le formulaire est valide, puis redirige vers le feed.
+  /**
+   * Soumet l'inscription si le formulaire est valide, puis redirige vers le feed.
+   */
   submit(): void {
     if (this.form.invalid || this.loading) {
       this.form.markAllAsTouched();

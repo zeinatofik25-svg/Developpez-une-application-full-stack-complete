@@ -30,8 +30,14 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Déclare la chaine de filtres Spring Security et les règles d'accès HTTP.
+     *
+     * @param http configuration de sécurité HTTP
+     * @return chaine de sécurité initialisée
+     * @throws Exception en cas d'erreur de configuration
+     */
     @Bean
-    // Configure la sécurité stateless JWT et les routes publiques/privées.
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -49,7 +55,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    // Provider d'authentification basé sur les utilisateurs stockés en base.
+    /**
+     * Fournit l'authentification DAO basée sur les comptes stockés en base.
+     *
+     * @return provider d'authentification
+     */
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
@@ -58,13 +68,21 @@ public class SecurityConfig {
     }
 
     @Bean
-    // Encodage bcrypt pour le stockage des mots de passe.
+    /**
+     * Expose l'encodeur BCrypt pour le hashage des mots de passe.
+     *
+     * @return encodeur de mots de passe
+     */
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    // Autorise le frontend local à appeler l'API avec credentials.
+    /**
+     * Configure CORS pour autoriser le frontend local avec credentials.
+     *
+     * @return source de configuration CORS
+     */
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:4200", "http://localhost:4201"));

@@ -42,28 +42,45 @@ export class AuthService {
 
   constructor(private readonly http: HttpClient) {}
 
-  // Authentifie l'utilisateur et synchronise le profil en mémoire.
+  /**
+   * Authentifie l'utilisateur et synchronise le profil en mémoire.
+   *
+   * @param payload identifiants de connexion
+   * @returns réponse d'authentification
+   */
   login(payload: LoginPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, payload, { withCredentials: true }).pipe(
       tap(response => this.syncCurrentUser(response))
     );
   }
 
-  // Crée un compte puis synchronise la session comme un login direct.
+  /**
+   * Crée un compte puis synchronise la session comme un login direct.
+   *
+   * @param payload données d'inscription
+   * @returns réponse d'authentification
+   */
   register(payload: RegisterPayload): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/register`, payload, { withCredentials: true }).pipe(
       tap(response => this.syncCurrentUser(response))
     );
   }
 
-  // Met à jour le profil et resynchronise les infos utilisateur en mémoire.
+  /**
+   * Met à jour le profil et resynchronise les infos utilisateur en mémoire.
+   *
+   * @param payload données de mise à jour du profil
+   * @returns réponse d'authentification mise à jour
+   */
   updateProfile(payload: UpdateProfilePayload): Observable<AuthResponse> {
     return this.http.put<AuthResponse>(`${this.apiUrl}/me`, payload, { withCredentials: true }).pipe(
       tap(response => this.syncCurrentUser(response))
     );
   }
 
-  // Ferme la session côté backend puis réinitialise l'état local.
+  /**
+   * Ferme la session côté backend puis réinitialise l'état local.
+   */
   logout(): void {
     this.http.post<void>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).subscribe({
       error: () => undefined
@@ -71,7 +88,11 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  // Recharge l'utilisateur connecté depuis le cookie HttpOnly si nécessaire.
+  /**
+   * Recharge l'utilisateur connecté depuis le cookie HttpOnly si nécessaire.
+   *
+   * @returns true si la session est restaurée, sinon false
+   */
   restoreSession(): Observable<boolean> {
     if (this.currentUserSubject.value) {
       return of(true);
@@ -93,7 +114,11 @@ export class AuthService {
     return this.restoreSessionRequest;
   }
 
-  // Met à jour l'utilisateur courant en mémoire.
+  /**
+   * Met à jour l'utilisateur courant en mémoire.
+   *
+   * @param response données utilisateur renvoyées par l'API
+   */
   private syncCurrentUser(response: AuthUser): void {
     const user: AuthUser = {
       userId: response.userId,

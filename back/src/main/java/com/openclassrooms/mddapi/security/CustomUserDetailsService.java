@@ -17,7 +17,13 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    // Charge un utilisateur Spring Security à partir de l'email ou du username.
+    /**
+     * Charge un utilisateur Spring Security à partir de l'email ou du username.
+     *
+     * @param username email ou nom d'utilisateur
+     * @return représentation UserDetails Spring Security
+     * @throws UsernameNotFoundException si aucun utilisateur ne correspond
+     */
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmailOrUsername(username, username)
             .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
